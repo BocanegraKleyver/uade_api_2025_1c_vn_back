@@ -11,7 +11,10 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 const uploadRoutes = require("./src/routes/upload.routes");
+const platoRoutes = require("./src/routes/plato.routes");
+
 app.use("/api", uploadRoutes);
+app.use("/api", platoRoutes);
 
 app.get("/", (req, res) => {
   res.send("API funcionando 👨‍🍳");
