@@ -17,11 +17,11 @@ const PlatoSchema = new mongoose.Schema(
     },
     ingredientes: [String],
     alergenos: [String],
-    etiquetas: [String], // Ej: ["🌶️ Picante", "🥬 Vegano"]
-    imagen: String, // nombre del archivo guardado (ej. 1721xxxxx.jpg)
+    etiquetas: [String],
+    imagen: String,
   },
   {
-    timestamps: true, // Mongo agrega createdAt y updatedAt
+    timestamps: true,
   }
 );
 

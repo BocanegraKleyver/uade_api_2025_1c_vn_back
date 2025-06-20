@@ -1,7 +1,6 @@
 const platoRepo = require("../repositories/plato.repository");
 
 const crearPlato = async (datos) => {
-  // Acá podrías validar, transformar, etc.
   return await platoRepo.crearPlato(datos);
 };
 
