@@ -1,20 +1,28 @@
 const mongoose = require("mongoose");
 
-const platoSchema = new mongoose.Schema(
+const PlatoSchema = new mongoose.Schema(
   {
-    nombre: { type: String, required: true },
-    descripcion: { type: String },
-    ingredientes: [{ type: String }],
-    alergenos: [{ type: String }],
-    etiquetas: [{ type: String }],
-    precio: { type: Number, required: true },
-    imagen: { type: String }, // Podés omitirlo si no lo usás
-    categoria: { type: String, required: true },
-    activo: { type: Boolean, default: true },
+    nombre: {
+      type: String,
+      required: true,
+    },
+    descripcion: String,
+    precio: {
+      type: Number,
+      required: true,
+    },
+    categoria: {
+      type: String,
+      required: true,
+    },
+    ingredientes: [String],
+    alergenos: [String],
+    etiquetas: [String], // Ej: ["🌶️ Picante", "🥬 Vegano"]
+    imagen: String, // nombre del archivo guardado (ej. 1721xxxxx.jpg)
   },
   {
-    timestamps: true,
+    timestamps: true, // Mongo agrega createdAt y updatedAt
   }
 );
 
-module.exports = mongoose.model("Plato", platoSchema);
+module.exports = mongoose.model("Plato", PlatoSchema);
