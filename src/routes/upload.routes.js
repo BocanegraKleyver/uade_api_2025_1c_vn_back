@@ -12,7 +12,19 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    const tiposPermitidos = /jpeg|jpg|png/;
+    const esValido = tiposPermitidos.test(file.mimetype);
+    if (esValido) {
+      cb(null, true);
+    } else {
+      cb(new Error("Solo se permiten imágenes JPG o PNG"));
+    }
+  },
+});
 
 router.post("/upload", upload.single("imagen"), (req, res) => {
   console.log("BODY:", req.body);

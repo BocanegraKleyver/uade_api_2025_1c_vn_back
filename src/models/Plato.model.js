@@ -19,6 +19,10 @@ const PlatoSchema = new mongoose.Schema(
     alergenos: [String],
     etiquetas: [String],
     imagen: String,
+    activo: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
