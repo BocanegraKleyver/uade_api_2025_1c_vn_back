@@ -20,11 +20,22 @@ const login = async (email, contraseña) => {
     throw new Error("Credenciales inválidas");
   }
 
-  return usuario;
+  // Retornar solo los datos necesarios para el token
+  return {
+    _id: usuario._id,
+    email: usuario.email,
+    rol: usuario.rol,
+    activo: usuario.activo,
+    permisos: usuario.permisos,
+  };
 };
 
 const obtenerUsuarios = async () => {
   return await usuarioRepo.obtenerUsuariosActivos();
+};
+
+const obtenerPorId = async (id) => {
+  return await usuarioRepo.buscarPorId(id);
 };
 
 const cambiarRol = async (id, nuevoRol) => {
@@ -46,4 +57,5 @@ module.exports = {
   cambiarRol,
   cambiarPermisos,
   desactivarUsuario,
+  obtenerPorId,
 };

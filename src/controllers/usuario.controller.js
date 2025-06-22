@@ -55,6 +55,19 @@ const obtenerTodos = async (req, res) => {
   }
 };
 
+const obtenerPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuario = await usuarioService.obtenerPorId(id);
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    res.json(usuario);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 const actualizarRol = async (req, res) => {
   try {
     const { id } = req.params;
@@ -114,7 +127,19 @@ const actualizarPermisos = async (req, res) => {
 const desactivar = async (req, res) => {
   try {
     const { id } = req.params;
-    const usuario = await usuarioService.desactivarUsuario(id);
+
+    // ⚠️ Buscar primero al usuario por ID
+    const usuario = await usuarioService.obtenerPorId(id);
+
+    // 🚫 Bloqueamos si se intenta desactivar al admin root
+    if (usuario.email === "admin@saboresurbanos.com") {
+      return res
+        .status(403)
+        .json({ error: "No se puede desactivar al administrador principal" });
+    }
+
+    // ✅ Continuar con desactivación
+    const usuarioDesactivado = await usuarioService.desactivarUsuario(id);
 
     // Log
     try {
@@ -127,7 +152,7 @@ const desactivar = async (req, res) => {
       console.warn("⚠️ No se pudo registrar el log:", logError.message);
     }
 
-    res.json(usuario);
+    res.json(usuarioDesactivado);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -140,4 +165,5 @@ module.exports = {
   actualizarRol,
   actualizarPermisos,
   desactivar,
+  obtenerPorId,
 };

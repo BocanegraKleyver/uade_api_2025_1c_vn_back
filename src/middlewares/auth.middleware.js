@@ -9,6 +9,7 @@ const verificarToken = (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
+  console.log("🔐 Token recibido:", token); // LOG NUEVO
 
   try {
     const usuario = jwt.verificarToken(token);
@@ -18,10 +19,10 @@ const verificarToken = (req, res, next) => {
       return res.status(403).json({ error: "Usuario inactivo" });
     }
 
-    req.usuario = usuario; // Guardamos info útil en el request
+    req.usuario = usuario;
     next();
   } catch (error) {
-    console.warn(`⚠️ Token inválido o expirado: ${error.message}`);
+    console.warn("❌ Error al verificar token:", error.message);
     return res.status(401).json({ error: "Token inválido o expirado" });
   }
 };

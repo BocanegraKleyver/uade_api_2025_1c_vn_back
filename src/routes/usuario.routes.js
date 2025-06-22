@@ -52,4 +52,11 @@ router.delete(
   usuarioController.desactivar
 );
 
+router.get(
+  "/usuarios/:id",
+  verificarToken,
+  soloAdmin,
+  usuarioController.obtenerPorId
+);
+
 module.exports = router;

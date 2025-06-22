@@ -17,6 +17,7 @@ const generarToken = (usuario) => {
 };
 
 const verificarToken = (token) => {
+  console.log("🧪 Verificando token con SECRET:", SECRET); // LOG NUEVO
   return jwt.verify(token, SECRET);
 };
 
