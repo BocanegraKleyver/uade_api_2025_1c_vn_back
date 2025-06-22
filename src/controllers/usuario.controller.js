@@ -27,6 +27,14 @@ const loginUsuario = async (req, res) => {
   try {
     const { email, contraseña } = req.body;
     const usuario = await usuarioService.login(email, contraseña);
+
+    // 🚫 Añadir justo después de esto:
+    if (!usuario.activo) {
+      return res
+        .status(403)
+        .json({ error: "Tu cuenta está inactiva. Contactá al administrador." });
+    }
+
     const token = jwt.generarToken(usuario);
 
     // Log

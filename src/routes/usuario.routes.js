@@ -20,43 +20,47 @@ router.get("/usuarios/admin-panel", verificarToken, soloAdmin, (req, res) => {
   res.json({ mensaje: "Bienvenido al panel de administración" });
 });
 
-// Obtener todos los usuarios activos
+// Listados
+// 1. Todos los usuarios (activos e inactivos)
 router.get(
-  "/usuarios",
+  "/usuarios/todos",
   verificarToken,
   soloAdmin,
   usuarioController.obtenerTodos
 );
 
-// Cambiar rol de usuario
+// 2. Solo los activos (opcional, si querés mantenerlo)
+router.get(
+  "/usuarios",
+  verificarToken,
+  soloAdmin,
+  usuarioController.obtenerTodos // función existente
+);
+
+// CRUD por ID y acciones individuales
+router.get(
+  "/usuarios/:id",
+  verificarToken,
+  soloAdmin,
+  usuarioController.obtenerPorId
+);
 router.put(
   "/usuarios/:id",
   verificarToken,
   soloAdmin,
   usuarioController.actualizarRol
 );
-
-// Cambiar permisos (como puedeEditarPlatos)
 router.put(
   "/usuarios/:id/permisos",
   verificarToken,
   soloAdmin,
   usuarioController.actualizarPermisos
 );
-
-// Baja lógica de usuario
 router.delete(
   "/usuarios/:id",
   verificarToken,
   soloAdmin,
   usuarioController.desactivar
-);
-
-router.get(
-  "/usuarios/:id",
-  verificarToken,
-  soloAdmin,
-  usuarioController.obtenerPorId
 );
 
 module.exports = router;

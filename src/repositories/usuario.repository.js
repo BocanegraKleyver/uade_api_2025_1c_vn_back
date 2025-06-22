@@ -12,7 +12,7 @@ const buscarPorEmail = async (email) => {
 };
 
 // Obtener usuario por ID
-const obtenerUsuarioPorId = async (id) => {
+const buscarPorId = async (id) => {
   return await Usuario.findById(id);
 };
 
@@ -31,11 +31,17 @@ const desactivarUsuario = async (id) => {
   return await Usuario.findByIdAndUpdate(id, { activo: false }, { new: true });
 };
 
+// Obtener todos (activos e inactivos)
+const obtenerTodosUsuarios = async () => {
+  return await Usuario.find().select("-contraseña");
+};
+
 module.exports = {
   crearUsuario,
   buscarPorEmail,
-  obtenerUsuarioPorId,
+  buscarPorId,
   obtenerUsuariosActivos,
   actualizarUsuario,
   desactivarUsuario,
+  obtenerTodosUsuarios,
 };

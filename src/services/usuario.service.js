@@ -50,6 +50,10 @@ const desactivarUsuario = async (id) => {
   return await usuarioRepo.desactivarUsuario(id);
 };
 
+const obtenerTodos = async () => {
+  return await usuarioRepo.obtenerTodosUsuarios();
+};
+
 module.exports = {
   crearUsuario,
   login,
@@ -58,4 +62,5 @@ module.exports = {
   cambiarPermisos,
   desactivarUsuario,
   obtenerPorId,
+  obtenerTodos,
 };
