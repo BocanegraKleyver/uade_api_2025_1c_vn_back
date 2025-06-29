@@ -6,19 +6,23 @@ const crearAdminSiNoExiste = async () => {
 
   const existente = await usuarioRepo.buscarPorEmail(adminEmail);
   if (existente) {
-    console.log("🟢 Admin ya existente");
+    console.log("🟢 Admin root ya existente");
     return;
   }
 
   const nuevoAdmin = {
-    nombre: "Admin",
+    nombre: "Sabores",
+    apellido: "Urbanos", // 💡 Apellido obligatorio
     email: adminEmail,
-    contraseña: "admin123",
-    rol: "admin",
+    contraseña: "admin123", // Podrías pedir cambiar luego
+    rol: "root",
+    isRoot: true, // Marca como admin root
     activo: true,
     permisos: {
-      puedeEditarPlatos: true,
-      puedeGestionarUsuarios: true,
+      gestionarUsuarios: true,
+      gestionarPlatos: true,
+      gestionarLog: true,
+      gestionarResenas: true, // Agregamos todas las banderas nuevas
     },
   };
 
@@ -27,11 +31,11 @@ const crearAdminSiNoExiste = async () => {
   // ✅ Guardar en log
   await logger.log({
     usuario: { nombre: "Sistema", email: "sistema@saboresurbanos.com" },
-    accion: "Crear usuario admin por defecto",
-    detalle: "El sistema creó el usuario administrador por primera vez",
+    accion: "Crear usuario root por defecto",
+    detalle: "El sistema creó el usuario admin root por primera vez",
   });
 
-  console.log("✅ Admin creado por defecto con permisos completos");
+  console.log("✅ Admin root creado con permisos completos");
 };
 
 module.exports = crearAdminSiNoExiste;

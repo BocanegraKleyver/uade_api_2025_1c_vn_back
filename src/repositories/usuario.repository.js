@@ -11,29 +11,44 @@ const buscarPorEmail = async (email) => {
   return await Usuario.findOne({ email });
 };
 
-// Obtener usuario por ID
+// Buscar usuario por ID
 const buscarPorId = async (id) => {
   return await Usuario.findById(id);
 };
 
-// Obtener todos los usuarios activos
+// Obtener solo usuarios activos
 const obtenerUsuariosActivos = async () => {
   return await Usuario.find({ activo: true }).select("-contraseña");
 };
 
-// Actualizar el rol o permisos
+// Obtener solo usuarios inactivos
+const obtenerUsuariosInactivos = async () => {
+  return await Usuario.find({ activo: false }).select("-contraseña");
+};
+
+// Obtener todos los usuarios (activos e inactivos)
+const obtenerTodosUsuarios = async () => {
+  return await Usuario.find().select("-contraseña");
+};
+
+// Actualizar campos de usuario (rol, permisos, nombre, apellido, etc.)
 const actualizarUsuario = async (id, campos) => {
   return await Usuario.findByIdAndUpdate(id, campos, { new: true });
 };
 
-// Baja lógica (desactivar usuario)
+// Baja lógica: marcar activo = false
 const desactivarUsuario = async (id) => {
   return await Usuario.findByIdAndUpdate(id, { activo: false }, { new: true });
 };
 
-// Obtener todos (activos e inactivos)
-const obtenerTodosUsuarios = async () => {
-  return await Usuario.find().select("-contraseña");
+// Reactivar usuario: marcar activo = true
+const activarUsuario = async (id) => {
+  return await Usuario.findByIdAndUpdate(id, { activo: true }, { new: true });
+};
+
+// Baja física: eliminar usuario de la base de datos
+const eliminarUsuario = async (id) => {
+  return await Usuario.findByIdAndDelete(id);
 };
 
 module.exports = {
@@ -41,7 +56,10 @@ module.exports = {
   buscarPorEmail,
   buscarPorId,
   obtenerUsuariosActivos,
+  obtenerUsuariosInactivos,
+  obtenerTodosUsuarios,
   actualizarUsuario,
   desactivarUsuario,
-  obtenerTodosUsuarios,
+  activarUsuario,
+  eliminarUsuario,
 };

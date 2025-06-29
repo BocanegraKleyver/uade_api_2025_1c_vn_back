@@ -6,8 +6,8 @@ require("dotenv").config();
 const uploadRoutes = require("./src/routes/upload.routes");
 const platoRoutes = require("./src/routes/plato.routes");
 const usuarioRoutes = require("./src/routes/usuario.routes");
-const crearAdminSiNoExiste = require("./src/config/crearAdmin");
 const logRoutes = require("./src/routes/log.routes");
+const crearAdminSiNoExiste = require("./src/config/crearAdmin");
 
 const app = express();
 

@@ -1,18 +1,18 @@
+// /middlewares/soloAdmin.js
 module.exports = function soloAdmin(req, res, next) {
-  if (!req.usuario || !req.usuario.activo) {
+  const u = req.usuario;
+  if (!u || !u.activo) {
     console.warn("❌ Acceso denegado: usuario no autenticado o inactivo");
     return res
       .status(403)
       .json({ error: "Acceso denegado: usuario inactivo o no autenticado" });
   }
 
-  if (req.usuario.rol !== "admin") {
-    console.warn(
-      `❌ Usuario ${req.usuario.email} intentó acceder sin ser admin`
-    );
+  if (u.rol !== "admin" && u.rol !== "root") {
+    console.warn(`❌ Usuario ${u.email} intentó acceder sin ser admin/root`);
     return res
       .status(403)
-      .json({ error: "Acceso denegado: se requiere rol admin" });
+      .json({ error: "Acceso denegado: se requiere rol admin o root" });
   }
 
   next();

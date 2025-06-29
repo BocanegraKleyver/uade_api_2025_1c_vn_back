@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const verificarToken = require("../middlewares/auth.middleware");
-const verificarPermisoEdicion = require("../middlewares/verificarPermisoEdicion");
+const verificarPermisoEdicion = require("../middlewares/verificarPermisoEdicionPlatos");
 const platoController = require("../controllers/plato.controller");
 
 // Obtener platos (acceso público)

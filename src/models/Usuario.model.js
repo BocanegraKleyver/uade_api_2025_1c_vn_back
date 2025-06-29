@@ -7,7 +7,13 @@ const UsuarioSchema = new mongoose.Schema(
       type: String,
       required: [true, "El nombre es obligatorio"],
       trim: true,
-      minlength: 2,
+      minlength: [2, "El nombre debe tener al menos 2 caracteres"],
+    },
+    apellido: {
+      type: String,
+      required: [true, "El apellido es obligatorio"],
+      trim: true,
+      minlength: [2, "El apellido debe tener al menos 2 caracteres"],
     },
     email: {
       type: String,
@@ -18,22 +24,26 @@ const UsuarioSchema = new mongoose.Schema(
     contraseña: {
       type: String,
       required: [true, "La contraseña es obligatoria"],
-      minlength: 6,
+      minlength: [6, "La contraseña debe tener al menos 6 caracteres"],
     },
     rol: {
       type: String,
-      enum: ["admin", "usuario"],
+      enum: ["root", "admin", "usuario"], // agregamos "root"
       default: "usuario",
+    },
+    isRoot: {
+      type: Boolean,
+      default: false,
     },
     activo: {
       type: Boolean,
       default: true,
     },
     permisos: {
-      puedeEditarPlatos: {
-        type: Boolean,
-        default: false,
-      },
+      gestionarUsuarios: { type: Boolean, default: false },
+      gestionarPlatos: { type: Boolean, default: false },
+      gestionarLog: { type: Boolean, default: false },
+      gestionarResenas: { type: Boolean, default: false },
     },
   },
   {
@@ -41,7 +51,7 @@ const UsuarioSchema = new mongoose.Schema(
   }
 );
 
-// Hashear la contraseña antes de guardar
+// Hash de contraseña antes de guardar
 UsuarioSchema.pre("save", async function (next) {
   if (!this.isModified("contraseña")) return next();
   const salt = await bcrypt.genSalt(10);

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const verificarToken = require("../middlewares/auth.middleware");
-const soloAdmin = require("../middlewares/roles.middleware");
+const soloAdmin = require("../middlewares/soloAdmin");
 const Log = require("../models/Log.model");
 
 // GET /api/logs?usuario=nombre&accion=crear&desde=2025-06-20&hasta=2025-06-21

@@ -1,43 +1,49 @@
+// src/routes/usuario.routes.js
 const express = require("express");
 const router = express.Router();
+
 const usuarioController = require("../controllers/usuario.controller");
 const verificarToken = require("../middlewares/auth.middleware");
-const soloAdmin = require("../middlewares/roles.middleware");
+const soloAdmin = require("../middlewares/soloAdmin");
+const verificarPermisoPlatos = require("../middlewares/verificarPermisoEdicionPlatos");
+const verificarPermisoLogs = require("../middlewares/verificarPermisoLogs");
+const verificarPermisoResenas = require("../middlewares/verificarPermisoResenas");
+const soloRootParaAdmins = require("../middlewares/soloRootParaAdmins");
 
-// Registro y Login
+// 🔐 Registro y login públicos
 router.post("/usuarios", usuarioController.registrarUsuario);
 router.post("/usuarios/login", usuarioController.loginUsuario);
 
-// Perfil del usuario autenticado
-router.get("/usuarios/perfil", verificarToken, (req, res) => {
-  res.json({
-    mensaje: `Hola ${req.usuario.email}, tu rol es ${req.usuario.rol}`,
-  });
-});
+// 🔍 Perfil del usuario logueado
+router.get("/usuarios/perfil", verificarToken, usuarioController.obtenerPorId);
 
-// Acceso solo para administradores
-router.get("/usuarios/admin-panel", verificarToken, soloAdmin, (req, res) => {
-  res.json({ mensaje: "Bienvenido al panel de administración" });
-});
+// 🔄 Cambio de contraseña (solo el usuario o admin; vos definís)
+router.put(
+  "/usuarios/:id/contraseña",
+  verificarToken,
+  soloAdmin,
+  usuarioController.cambiarContraseña
+);
 
-// Listados
-// 1. Todos los usuarios (activos e inactivos)
+// 🛠 Panel administrativo y gestión de usuarios — solo admins
 router.get(
   "/usuarios/todos",
   verificarToken,
   soloAdmin,
   usuarioController.obtenerTodos
 );
-
-// 2. Solo los activos (opcional, si querés mantenerlo)
 router.get(
-  "/usuarios",
+  "/usuarios/activos",
   verificarToken,
   soloAdmin,
-  usuarioController.obtenerTodos // función existente
+  usuarioController.obtenerActivos
 );
-
-// CRUD por ID y acciones individuales
+router.get(
+  "/usuarios/inactivos",
+  verificarToken,
+  soloAdmin,
+  usuarioController.obtenerInactivos
+);
 router.get(
   "/usuarios/:id",
   verificarToken,
@@ -45,22 +51,45 @@ router.get(
   usuarioController.obtenerPorId
 );
 router.put(
-  "/usuarios/:id",
+  "/usuarios/:id/rol",
   verificarToken,
   soloAdmin,
+  soloRootParaAdmins,
   usuarioController.actualizarRol
 );
+
 router.put(
   "/usuarios/:id/permisos",
   verificarToken,
   soloAdmin,
   usuarioController.actualizarPermisos
 );
-router.delete(
-  "/usuarios/:id",
+
+// 🚫 Baja lógica / Re-activación (flag `activo`):
+router.put(
+  "/usuarios/:id/desactivar",
   verificarToken,
   soloAdmin,
   usuarioController.desactivar
 );
+router.put(
+  "/usuarios/:id/reactivar",
+  verificarToken,
+  soloAdmin,
+  usuarioController.activar
+);
+
+// 🗑 Baja física — eliminación definitiva
+router.delete(
+  "/usuarios/:id/fisico",
+  verificarToken,
+  soloAdmin,
+  usuarioController.eliminar
+);
+
+// 🔑 Gestión de recursos protegidos: platos, logs, reseñas
+router.use("/platos", verificarToken, verificarPermisoPlatos);
+router.use("/logs", verificarToken, verificarPermisoLogs);
+router.use("/resenas", verificarToken, verificarPermisoResenas);
 
 module.exports = router;

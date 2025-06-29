@@ -2,20 +2,16 @@ const usuarioService = require("../services/usuario.service");
 const jwt = require("../utils/jwt");
 const logger = require("../utils/logger");
 
+// Registrar usuario nuevo
 const registrarUsuario = async (req, res) => {
   try {
     const nuevoUsuario = await usuarioService.crearUsuario(req.body);
 
-    // intentamos registrar el log, pero si falla, no rompe la app
-    try {
-      await logger.log({
-        usuario: nuevoUsuario,
-        accion: "Registro de nuevo usuario",
-        detalle: `El usuario ${nuevoUsuario.email} se registró`,
-      });
-    } catch (logError) {
-      console.warn("⚠️ No se pudo registrar el log:", logError.message);
-    }
+    await logger.log({
+      usuario: nuevoUsuario,
+      accion: "Registro de usuario",
+      detalle: `Se registró ${nuevoUsuario.email}`,
+    });
 
     res.status(201).json(nuevoUsuario);
   } catch (error) {
@@ -23,30 +19,19 @@ const registrarUsuario = async (req, res) => {
   }
 };
 
+// Login de usuario
 const loginUsuario = async (req, res) => {
   try {
     const { email, contraseña } = req.body;
     const usuario = await usuarioService.login(email, contraseña);
 
-    // 🚫 Añadir justo después de esto:
-    if (!usuario.activo) {
-      return res
-        .status(403)
-        .json({ error: "Tu cuenta está inactiva. Contactá al administrador." });
-    }
-
     const token = jwt.generarToken(usuario);
 
-    // Log
-    try {
-      await logger.log({
-        usuario,
-        accion: "Login exitoso",
-        detalle: `El usuario ${usuario.email} inició sesión`,
-      });
-    } catch (logError) {
-      console.warn("⚠️ No se pudo registrar el log:", logError.message);
-    }
+    await logger.log({
+      usuario,
+      accion: "Login",
+      detalle: `Login de ${usuario.email}`,
+    });
 
     res.json({ token });
   } catch (error) {
@@ -54,49 +39,88 @@ const loginUsuario = async (req, res) => {
   }
 };
 
+// Obtener todos los usuarios
 const obtenerTodos = async (req, res) => {
   try {
-    const usuarios = await usuarioService.obtenerUsuarios();
+    const usuarios = await usuarioService.obtenerTodoslosUsuarios();
     res.json(usuarios);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// Obtener usuarios activos
+const obtenerActivos = async (req, res) => {
+  try {
+    const usuarios = await usuarioService.obtenerUsuariosActivos();
+    res.json(usuarios);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Obtener usuarios inactivos
+const obtenerInactivos = async (req, res) => {
+  try {
+    const usuarios = await usuarioService.obtenerUsuariosInactivos();
+    res.json(usuarios);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Obtener por ID
 const obtenerPorId = async (req, res) => {
   try {
-    const { id } = req.params;
-    const usuario = await usuarioService.obtenerPorId(id);
-    if (!usuario) {
-      return res.status(404).json({ error: "Usuario no encontrado" });
-    }
+    const usuario = await usuarioService.obtenerPorId(req.params.id);
+    if (!usuario) return res.status(404).json({ error: "No encontrado" });
     res.json(usuario);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
+// Cambiar contraseña
+const cambiarContraseña = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nuevaContraseña } = req.body;
+
+    if (!nuevaContraseña || nuevaContraseña.length < 6) {
+      return res.status(400).json({ error: "Contraseña inválida" });
+    }
+
+    const actualizado = await usuarioService.cambiarContraseña(
+      id,
+      nuevaContraseña
+    );
+
+    await logger.log({
+      usuario: req.usuario,
+      accion: "Cambio de contraseña",
+      detalle: `Cambio de contraseña para ${actualizado.email}`,
+    });
+
+    res.json(actualizado);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Cambiar rol
 const actualizarRol = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { rol } = req.body;
+    const actualizado = await usuarioService.cambiarRol(
+      req.usuario, // actor que hace la petición
+      req.params.id, // usuario destino (target)
+      req.body.rol // nuevo rol solicitado
+    );
 
-    if (!["admin", "usuario"].includes(rol)) {
-      return res.status(400).json({ error: "Rol inválido" });
-    }
-
-    const actualizado = await usuarioService.cambiarRol(id, rol);
-
-    // Log
-    try {
-      await logger.log({
-        usuario: req.usuario,
-        accion: "Cambio de rol",
-        detalle: `Cambió el rol del usuario ${actualizado.email} a ${rol}`,
-      });
-    } catch (logError) {
-      console.warn("⚠️ No se pudo registrar el log:", logError.message);
-    }
+    await logger.log({
+      usuario: req.usuario,
+      accion: "Cambio de rol",
+      detalle: `Cambió el rol de ${actualizado.email} a ${req.body.rol}`,
+    });
 
     res.json(actualizado);
   } catch (error) {
@@ -104,63 +128,44 @@ const actualizarRol = async (req, res) => {
   }
 };
 
+// Cambiar permisos
 const actualizarPermisos = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { permisos } = req.body;
-
-    if (typeof permisos !== "object" || permisos === null) {
-      return res.status(400).json({ error: "Permisos inválidos" });
-    }
-
-    const actualizado = await usuarioService.cambiarPermisos(id, permisos);
-
-    // Log
-    try {
-      await logger.log({
-        usuario: req.usuario,
-        accion: "Cambio de permisos",
-        detalle: `Actualizó los permisos del usuario ${actualizado.email}`,
-      });
-    } catch (logError) {
-      console.warn("⚠️ No se pudo registrar el log:", logError.message);
-    }
-
+    const actualizado = await usuarioService.cambiarPermisos(
+      req.params.id,
+      req.body.permisos
+    );
     res.json(actualizado);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
+// Baja lógica
 const desactivar = async (req, res) => {
   try {
-    const { id } = req.params;
+    const usuario = await usuarioService.desactivarUsuario(req.params.id);
+    res.json(usuario);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
-    // ⚠️ Buscar primero al usuario por ID
-    const usuario = await usuarioService.obtenerPorId(id);
+// Reactivar
+const activar = async (req, res) => {
+  try {
+    const usuario = await usuarioService.activarUsuario(req.params.id);
+    res.json(usuario);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
-    // 🚫 Bloqueamos si se intenta desactivar al admin root
-    if (usuario.email === "admin@saboresurbanos.com") {
-      return res
-        .status(403)
-        .json({ error: "No se puede desactivar al administrador principal" });
-    }
-
-    // ✅ Continuar con desactivación
-    const usuarioDesactivado = await usuarioService.desactivarUsuario(id);
-
-    // Log
-    try {
-      await logger.log({
-        usuario: req.usuario,
-        accion: "Desactivación de usuario",
-        detalle: `Desactivó al usuario ${usuario.email}`,
-      });
-    } catch (logError) {
-      console.warn("⚠️ No se pudo registrar el log:", logError.message);
-    }
-
-    res.json(usuarioDesactivado);
+// Baja física
+const eliminar = async (req, res) => {
+  try {
+    const eliminado = await usuarioService.eliminarUsuario(req.params.id);
+    res.json(eliminado);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -170,8 +175,13 @@ module.exports = {
   registrarUsuario,
   loginUsuario,
   obtenerTodos,
+  obtenerActivos,
+  obtenerInactivos,
+  obtenerPorId,
+  cambiarContraseña,
   actualizarRol,
   actualizarPermisos,
   desactivar,
-  obtenerPorId,
+  activar,
+  eliminar,
 };
