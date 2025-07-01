@@ -1,4 +1,3 @@
-// /middlewares/verificarPermisoResenas.js
 module.exports = function verificarPermisoResenas(req, res, next) {
   const u = req.usuario;
   if (u.rol === "root" || u.rol === "admin" || u.permisos?.gestionarResenas) {

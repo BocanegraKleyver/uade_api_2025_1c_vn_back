@@ -12,25 +12,35 @@ const crearAdminSiNoExiste = async () => {
 
   const nuevoAdmin = {
     nombre: "Sabores",
-    apellido: "Urbanos", // 💡 Apellido obligatorio
+    apellido: "Urbanos",
     email: adminEmail,
-    contraseña: "admin123", // Podrías pedir cambiar luego
+    contraseña: "admin123",
     rol: "root",
-    isRoot: true, // Marca como admin root
+    isRoot: true,
     activo: true,
     permisos: {
       gestionarUsuarios: true,
       gestionarPlatos: true,
-      gestionarLog: true,
-      gestionarResenas: true, // Agregamos todas las banderas nuevas
+      gestionarLogs: true,
+      gestionarResenas: true,
     },
   };
 
   const creado = await usuarioRepo.crearUsuario(nuevoAdmin);
 
-  // ✅ Guardar en log
   await logger.log({
-    usuario: { nombre: "Sistema", email: "sistema@saboresurbanos.com" },
+    usuario: {
+      nombre: "Sistema",
+      apellido: "Automático",
+      email: "sistema@saboresurbanos.com",
+      rol: "root",
+      permisos: {
+        gestionarUsuarios: true,
+        gestionarPlatos: true,
+        gestionarLogs: true,
+        gestionarResenas: true,
+      },
+    },
     accion: "Crear usuario root por defecto",
     detalle: "El sistema creó el usuario admin root por primera vez",
   });

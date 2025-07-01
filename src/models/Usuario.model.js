@@ -28,7 +28,7 @@ const UsuarioSchema = new mongoose.Schema(
     },
     rol: {
       type: String,
-      enum: ["root", "admin", "usuario"], // agregamos "root"
+      enum: ["root", "admin", "usuario"],
       default: "usuario",
     },
     isRoot: {
@@ -42,7 +42,7 @@ const UsuarioSchema = new mongoose.Schema(
     permisos: {
       gestionarUsuarios: { type: Boolean, default: false },
       gestionarPlatos: { type: Boolean, default: false },
-      gestionarLog: { type: Boolean, default: false },
+      gestionarLogs: { type: Boolean, default: false },
       gestionarResenas: { type: Boolean, default: false },
     },
   },
@@ -51,7 +51,6 @@ const UsuarioSchema = new mongoose.Schema(
   }
 );
 
-// Hash de contraseña antes de guardar
 UsuarioSchema.pre("save", async function (next) {
   if (!this.isModified("contraseña")) return next();
   const salt = await bcrypt.genSalt(10);

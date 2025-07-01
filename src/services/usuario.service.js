@@ -1,8 +1,7 @@
-// src/services/usuario.service.js
 const bcrypt = require("bcryptjs");
 const usuarioRepo = require("../repositories/usuario.repository");
+const logger = require("../utils/logger");
 
-// Crear usuario nuevo
 const crearUsuario = async (datos) => {
   const existente = await usuarioRepo.buscarPorEmail(datos.email);
   if (existente) {
@@ -11,7 +10,6 @@ const crearUsuario = async (datos) => {
   return await usuarioRepo.crearUsuario(datos);
 };
 
-// Login
 const login = async (email, contraseña) => {
   const user = await usuarioRepo.buscarPorEmail(email);
   if (!user) throw new Error("Credenciales inválidas");
@@ -22,6 +20,7 @@ const login = async (email, contraseña) => {
   return {
     _id: user._id,
     nombre: user.nombre,
+    apellido: user.apellido,
     email: user.email,
     rol: user.rol,
     activo: user.activo,
@@ -30,49 +29,40 @@ const login = async (email, contraseña) => {
   };
 };
 
-// Cambiar contraseña
 const cambiarContraseña = async (id, nuevaContraseña) => {
   const salt = await bcrypt.genSalt(10);
   const hashed = await bcrypt.hash(nuevaContraseña, salt);
   return await usuarioRepo.actualizarUsuario(id, { contraseña: hashed });
 };
 
-// Obtener solo usuarios activos
 const obtenerUsuariosActivos = async () => {
   return await usuarioRepo.obtenerUsuariosActivos();
 };
 
-// Obtener usuarios inactivos
 const obtenerUsuariosInactivos = async () => {
   return await usuarioRepo.obtenerUsuariosInactivos();
 };
 
-// Obtener todos los usuarios
 const obtenerTodoslosUsuarios = async () => {
   return await usuarioRepo.obtenerTodosUsuarios();
 };
 
-// Obtener usuario por ID
 const obtenerPorId = async (id) => {
   return await usuarioRepo.buscarPorId(id);
 };
 
-// Cambiar rol con validación basada en el actor
 const cambiarRol = async (actor, targetId, nuevoRol) => {
   const target = await usuarioRepo.buscarPorId(targetId);
   if (!target) throw new Error("Usuario destino no encontrado");
 
-  // Reglas
   if (actor.rol === "usuario") {
     throw new Error("No tenés permisos para cambiar roles");
   }
 
-  // Prohibido tocar usuarios root
   if (target.rol === "root" || nuevoRol === "root") {
     throw new Error("No se puede asignar ni modificar rol root");
   }
 
-  // Si sos admin, solo podés ascender usuarios a admin, pero no tocar otros admins
   if (actor.rol === "admin") {
     if (target.rol !== "usuario") {
       throw new Error("Los administradores solo pueden modificar usuarios");
@@ -82,34 +72,41 @@ const cambiarRol = async (actor, targetId, nuevoRol) => {
     }
   }
 
-  // Si sos root, podés modificar usuarios o admins, pero no dar/quitar rol root
-  if (actor.rol === "root") {
-    if (nuevoRol === "root") {
-      throw new Error("No podés asignar el rol root");
-    }
+  if (actor.rol === "root" && nuevoRol === "root") {
+    throw new Error("No podés asignar el rol root");
   }
 
   return await usuarioRepo.actualizarUsuario(targetId, { rol: nuevoRol });
 };
 
-// Cambiar permisos
 const cambiarPermisos = async (id, nuevosPermisos) => {
   return await usuarioRepo.actualizarUsuario(id, { permisos: nuevosPermisos });
 };
 
-// Baja lógica (inactivar usuario)
 const desactivarUsuario = async (id) => {
   return await usuarioRepo.desactivarUsuario(id);
 };
 
-// Reactivar usuario
 const activarUsuario = async (id) => {
   return await usuarioRepo.activarUsuario(id);
 };
 
-// Baja física (eliminar usuario permanentemente)
 const eliminarUsuario = async (id) => {
   return await usuarioRepo.eliminarUsuario(id);
+};
+
+const logoutUsuario = async (usuario) => {
+  await logger.log({
+    usuario: {
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      email: usuario.email,
+      rol: usuario.rol,
+      permisos: usuario.permisos,
+    },
+    accion: "Logout",
+    detalle: `El usuario cerró sesión: ${usuario.email}`,
+  });
 };
 
 module.exports = {
@@ -125,4 +122,5 @@ module.exports = {
   desactivarUsuario,
   activarUsuario,
   eliminarUsuario,
+  logoutUsuario,
 };

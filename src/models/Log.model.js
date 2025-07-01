@@ -4,7 +4,15 @@ const LogSchema = new mongoose.Schema(
   {
     usuario: {
       nombre: String,
+      apellido: String,
       email: String,
+      rol: String,
+      permisos: {
+        gestionarUsuarios: Boolean,
+        gestionarPlatos: Boolean,
+        gestionarLogs: Boolean,
+        gestionarResenas: Boolean,
+      },
     },
     accion: {
       type: String,

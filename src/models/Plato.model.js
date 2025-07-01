@@ -29,4 +29,4 @@ const PlatoSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Plato", PlatoSchema);
+module.exports = mongoose.models.Plato || mongoose.model("Plato", PlatoSchema);

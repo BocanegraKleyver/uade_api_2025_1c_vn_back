@@ -1,4 +1,3 @@
-// src/routes/usuario.routes.js
 const express = require("express");
 const router = express.Router();
 
@@ -10,14 +9,17 @@ const verificarPermisoLogs = require("../middlewares/verificarPermisoLogs");
 const verificarPermisoResenas = require("../middlewares/verificarPermisoResenas");
 const soloRootParaAdmins = require("../middlewares/soloRootParaAdmins");
 
-// 🔐 Registro y login públicos
 router.post("/usuarios", usuarioController.registrarUsuario);
 router.post("/usuarios/login", usuarioController.loginUsuario);
 
-// 🔍 Perfil del usuario logueado
+router.post(
+  "/usuarios/logout",
+  verificarToken,
+  usuarioController.logoutUsuario
+);
+
 router.get("/usuarios/perfil", verificarToken, usuarioController.obtenerPorId);
 
-// 🔄 Cambio de contraseña (solo el usuario o admin; vos definís)
 router.put(
   "/usuarios/:id/contraseña",
   verificarToken,
@@ -25,7 +27,6 @@ router.put(
   usuarioController.cambiarContraseña
 );
 
-// 🛠 Panel administrativo y gestión de usuarios — solo admins
 router.get(
   "/usuarios/todos",
   verificarToken,
@@ -57,7 +58,6 @@ router.put(
   soloRootParaAdmins,
   usuarioController.actualizarRol
 );
-
 router.put(
   "/usuarios/:id/permisos",
   verificarToken,
@@ -65,7 +65,6 @@ router.put(
   usuarioController.actualizarPermisos
 );
 
-// 🚫 Baja lógica / Re-activación (flag `activo`):
 router.put(
   "/usuarios/:id/desactivar",
   verificarToken,
@@ -79,7 +78,6 @@ router.put(
   usuarioController.activar
 );
 
-// 🗑 Baja física — eliminación definitiva
 router.delete(
   "/usuarios/:id/fisico",
   verificarToken,
@@ -87,7 +85,6 @@ router.delete(
   usuarioController.eliminar
 );
 
-// 🔑 Gestión de recursos protegidos: platos, logs, reseñas
 router.use("/platos", verificarToken, verificarPermisoPlatos);
 router.use("/logs", verificarToken, verificarPermisoLogs);
 router.use("/resenas", verificarToken, verificarPermisoResenas);

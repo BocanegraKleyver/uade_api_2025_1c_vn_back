@@ -1,4 +1,3 @@
-// /middlewares/soloAdmin.js
 module.exports = function soloAdmin(req, res, next) {
   const u = req.usuario;
   if (!u || !u.activo) {

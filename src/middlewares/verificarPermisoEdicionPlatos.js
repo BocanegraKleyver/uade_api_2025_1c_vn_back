@@ -1,4 +1,3 @@
-// /middlewares/verificarPermisoPlatos.js
 module.exports = function verificarPermisoPlatos(req, res, next) {
   const u = req.usuario;
   if (u.rol === "root" || u.rol === "admin" || u.permisos?.gestionarPlatos) {

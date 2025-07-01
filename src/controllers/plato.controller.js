@@ -1,107 +1,189 @@
 const platoService = require("../services/plato.service");
-const logger = require("../utils/logger"); // 👈 nuevo
+const logger = require("../utils/logger");
+const { formatearUsuarioParaLog } = require("../utils/logger");
 
 const crearPlato = async (req, res) => {
   try {
-    const nuevoPlato = await platoService.crearPlato(req.body);
+    const {
+      nombre,
+      descripcion,
+      precio,
+      categoria,
+      ingredientes,
+      alergenos,
+      etiquetas,
+      activo,
+    } = req.body;
 
-    // Log seguro
-    try {
-      await logger.log({
-        usuario: req.usuario,
-        accion: "Creación de plato",
-        detalle: `Se creó el plato ${nuevoPlato.nombre}`,
-      });
-    } catch (logError) {
-      console.warn("⚠️ No se pudo registrar el log:", logError.message);
-    }
+    const nuevoPlatoData = {
+      nombre: nombre?.trim(),
+      descripcion: descripcion?.trim(),
+      precio: parseFloat(precio),
+      categoria,
+      ingredientes: ingredientes
+        ? ingredientes.split(",").map((i) => i.trim())
+        : [],
+      alergenos: alergenos ? alergenos.split(",").map((a) => a.trim()) : [],
+      etiquetas: etiquetas ? etiquetas.split(",").map((e) => e.trim()) : [],
+      imagen: req.file?.filename || "",
+      activo: activo === "false" ? false : true,
+    };
+
+    const nuevoPlato = await platoService.crearPlato(nuevoPlatoData);
+
+    await logger.log({
+      usuario: formatearUsuarioParaLog(req.usuario),
+      accion: "Crear plato",
+      detalle: `Plato creado: ${nuevoPlato.nombre}`,
+    });
 
     res.status(201).json(nuevoPlato);
   } catch (error) {
-    console.error("Error al crear el plato:", error);
-    res.status(500).json({ error: "Error al crear el plato" });
+    console.error("Error en crearPlato:", error);
+    res.status(400).json({ error: error.message });
   }
 };
 
-const obtenerPlatos = async (req, res) => {
+const obtenerTodos = async (req, res) => {
   try {
-    const platos = await platoService.obtenerPlatos();
+    const platos = await platoService.obtenerTodos();
     res.json(platos);
   } catch (error) {
-    console.error("Error al obtener platos:", error);
-    res.status(500).json({ error: "Error al obtener platos" });
+    res.status(500).json({ error: error.message });
   }
 };
 
-const obtenerPlatoPorId = async (req, res) => {
+const obtenerActivos = async (req, res) => {
   try {
-    const plato = await platoService.obtenerPlatoPorId(req.params.id);
-    if (!plato || !plato.activo) {
-      return res.status(404).json({ error: "Plato no encontrado" });
-    }
+    const platos = await platoService.obtenerActivos();
+    res.json(platos);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const obtenerInactivos = async (req, res) => {
+  try {
+    const platos = await platoService.obtenerInactivos();
+    res.json(platos);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const obtenerPorId = async (req, res) => {
+  try {
+    const plato = await platoService.obtenerPorId(req.params.id);
     res.json(plato);
   } catch (error) {
-    console.error("Error al buscar plato:", error);
-    res.status(500).json({ error: "Error al buscar plato" });
+    res.status(404).json({ error: error.message });
   }
 };
 
 const actualizarPlato = async (req, res) => {
   try {
+    const {
+      nombre,
+      descripcion,
+      precio,
+      categoria,
+      ingredientes,
+      alergenos,
+      etiquetas,
+      activo,
+    } = req.body;
+
+    const datosActualizados = {
+      nombre: nombre?.trim(),
+      descripcion: descripcion?.trim(),
+      precio: parseFloat(precio),
+      categoria,
+      ingredientes: ingredientes
+        ? ingredientes.split(",").map((i) => i.trim())
+        : [],
+      alergenos: alergenos ? alergenos.split(",").map((a) => a.trim()) : [],
+      etiquetas: etiquetas ? etiquetas.split(",").map((e) => e.trim()) : [],
+      activo: activo === "false" ? false : true,
+    };
+
+    if (req.file?.filename) {
+      datosActualizados.imagen = req.file.filename;
+    }
+
     const actualizado = await platoService.actualizarPlato(
       req.params.id,
-      req.body
+      datosActualizados
     );
 
-    if (!actualizado)
-      return res.status(404).json({ error: "Plato no encontrado" });
-
-    // Log
-    try {
-      await logger.log({
-        usuario: req.usuario,
-        accion: "Actualización de plato",
-        detalle: `Actualizó el plato ${actualizado.nombre}`,
-      });
-    } catch (logError) {
-      console.warn("⚠️ No se pudo registrar el log:", logError.message);
-    }
+    await logger.log({
+      usuario: formatearUsuarioParaLog(req.usuario),
+      accion: "Editar plato",
+      detalle: `Editó el plato: ${actualizado.nombre}`,
+    });
 
     res.json(actualizado);
   } catch (error) {
-    console.error("Error al actualizar plato:", error);
-    res.status(500).json({ error: "Error al actualizar plato" });
+    console.error("Error en actualizarPlato:", error);
+    res.status(400).json({ error: error.message });
   }
 };
 
-const eliminarPlato = async (req, res) => {
+const desactivar = async (req, res) => {
+  try {
+    const plato = await platoService.desactivarPlato(req.params.id);
+
+    await logger.log({
+      usuario: formatearUsuarioParaLog(req.usuario),
+      accion: "Desactivar plato",
+      detalle: `Desactivó el plato: ${plato.nombre}`,
+    });
+
+    res.json(plato);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const activar = async (req, res) => {
+  try {
+    const plato = await platoService.activarPlato(req.params.id);
+
+    await logger.log({
+      usuario: formatearUsuarioParaLog(req.usuario),
+      accion: "Reactivar plato",
+      detalle: `Reactivó el plato: ${plato.nombre}`,
+    });
+
+    res.json(plato);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const eliminar = async (req, res) => {
   try {
     const eliminado = await platoService.eliminarPlato(req.params.id);
-    if (!eliminado)
-      return res.status(404).json({ error: "Plato no encontrado" });
 
-    // Log
-    try {
-      await logger.log({
-        usuario: req.usuario,
-        accion: "Eliminación de plato",
-        detalle: `Eliminó (borrado lógico) el plato ${eliminado.nombre}`,
-      });
-    } catch (logError) {
-      console.warn("⚠️ No se pudo registrar el log:", logError.message);
-    }
+    await logger.log({
+      usuario: formatearUsuarioParaLog(req.usuario),
+      accion: "Eliminar plato",
+      detalle: `Eliminó el plato: ${eliminado.nombre}`,
+    });
 
-    res.json({ mensaje: "Plato eliminado" });
+    res.json(eliminado);
   } catch (error) {
-    console.error("Error al eliminar plato:", error);
-    res.status(500).json({ error: "Error al eliminar plato" });
+    res.status(400).json({ error: error.message });
   }
 };
 
 module.exports = {
   crearPlato,
-  obtenerPlatos,
-  obtenerPlatoPorId,
+  obtenerTodos,
+  obtenerActivos,
+  obtenerInactivos,
+  obtenerPorId,
   actualizarPlato,
-  eliminarPlato,
+  desactivar,
+  activar,
+  eliminar,
 };

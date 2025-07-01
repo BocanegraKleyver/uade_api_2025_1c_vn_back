@@ -3,9 +3,14 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
-const uploadRoutes = require("./src/routes/upload.routes");
-const platoRoutes = require("./src/routes/plato.routes");
 const usuarioRoutes = require("./src/routes/usuario.routes");
+
+const precargarPlatos = require("./src/config/precargarPlatos");
+const platoRoutes = require("./src/routes/plato.routes");
+
+const reseniaRoutes = require("./src/routes/resenia.routes");
+const precargarResenias = require("./src/config/precargarResenias");
+
 const logRoutes = require("./src/routes/log.routes");
 const crearAdminSiNoExiste = require("./src/config/crearAdmin");
 
@@ -17,10 +22,10 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 // Rutas
-app.use("/api", uploadRoutes);
 app.use("/api", platoRoutes);
 app.use("/api", usuarioRoutes);
 app.use("/api", logRoutes);
+app.use("/api/resenas", reseniaRoutes);
 
 app.get("/", (req, res) => {
   res.send("API funcionando 👨‍🍳");
@@ -33,7 +38,9 @@ mongoose
   .then(async () => {
     console.log("Conectado a MongoDB Atlas");
 
-    await crearAdminSiNoExiste(); // Crea el admin al iniciar, si no existe
+    await crearAdminSiNoExiste(); // ✅ Crear admin root si no existe
+    await precargarPlatos(); // ✅ Precargar platos si no hay en DB
+    await precargarResenias(); // ✅ Precarga de reseñas ← AGREGADO
 
     app.listen(PORT, () =>
       console.log(`✅ Servidor corriendo en http://localhost:${PORT}`)

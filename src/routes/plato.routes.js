@@ -1,31 +1,69 @@
 const express = require("express");
 const router = express.Router();
-const verificarToken = require("../middlewares/auth.middleware");
-const verificarPermisoEdicion = require("../middlewares/verificarPermisoEdicionPlatos");
+
 const platoController = require("../controllers/plato.controller");
+const verificarToken = require("../middlewares/auth.middleware");
+const verificarPermisoPlatos = require("../middlewares/verificarPermisoEdicionPlatos");
+const upload = require("../middlewares/multer.middleware");
 
-// Obtener platos (acceso público)
-router.get("/platos", platoController.obtenerPlatos);
-router.get("/platos/:id", platoController.obtenerPlatoPorId);
-
-// Crear, editar y eliminar platos (solo admin o usuario con puedeEditar)
 router.post(
   "/platos",
   verificarToken,
-  verificarPermisoEdicion,
+  verificarPermisoPlatos,
+  upload.single("imagen"),
   platoController.crearPlato
 );
+
+router.get(
+  "/platos/todos",
+  verificarToken,
+  verificarPermisoPlatos,
+  platoController.obtenerTodos
+);
+
+router.get("/platos", platoController.obtenerActivos);
+
+router.get(
+  "/platos/inactivos",
+  verificarToken,
+  verificarPermisoPlatos,
+  platoController.obtenerInactivos
+);
+
+router.get(
+  "/platos/:id",
+  verificarToken,
+  verificarPermisoPlatos,
+  platoController.obtenerPorId
+);
+
 router.put(
   "/platos/:id",
   verificarToken,
-  verificarPermisoEdicion,
+  verificarPermisoPlatos,
+  upload.single("imagen"),
   platoController.actualizarPlato
 );
-router.delete(
-  "/platos/:id",
+
+router.put(
+  "/platos/:id/desactivar",
   verificarToken,
-  verificarPermisoEdicion,
-  platoController.eliminarPlato
+  verificarPermisoPlatos,
+  platoController.desactivar
+);
+
+router.put(
+  "/platos/:id/reactivar",
+  verificarToken,
+  verificarPermisoPlatos,
+  platoController.activar
+);
+
+router.delete(
+  "/platos/:id/fisico",
+  verificarToken,
+  verificarPermisoPlatos,
+  platoController.eliminar
 );
 
 module.exports = router;
