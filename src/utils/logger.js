@@ -1,5 +1,7 @@
 const Log = require("../models/Log.model");
 
+const isDev = process.env.NODE_ENV === "development";
+
 const formatearUsuarioParaLog = (usuario) => {
   if (!usuario || !usuario.email) {
     return {
@@ -41,9 +43,14 @@ const log = async ({ usuario, accion, detalle = "" }) => {
     });
 
     await nuevoLog.save();
-    console.log(`📝 Log registrado: ${accion} - ${usuario.email}`);
+
+    if (isDev) {
+      console.log(`📝 Log registrado: ${accion} - ${usuario.email}`);
+    }
   } catch (error) {
-    console.error("❌ Error al registrar log:", error.message);
+    if (isDev) {
+      console.error("❌ Error al registrar log:", error.message);
+    }
   }
 };
 

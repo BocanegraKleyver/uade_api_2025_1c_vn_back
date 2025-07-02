@@ -8,7 +8,6 @@ const verificarPermisoResenas = require("../middlewares/verificarPermisoResenas"
 router.get(
   "/plato/:platoId",
   (req, res, next) => {
-    console.log("🟢 Entró a GET /plato/:platoId");
     next();
   },
   reseniaController.obtenerPorPlato
@@ -17,7 +16,6 @@ router.get(
 router.post(
   "/",
   (req, res, next) => {
-    console.log("🟢 Entró a POST /");
     next();
   },
   reseniaController.crear
@@ -28,7 +26,6 @@ router.get(
   verificarToken,
   verificarPermisoResenas,
   (req, res, next) => {
-    console.log("🔒 Entró a GET / TODAS las reseñas");
     next();
   },
   reseniaController.obtenerTodas

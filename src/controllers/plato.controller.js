@@ -41,7 +41,9 @@ const crearPlato = async (req, res) => {
 
     res.status(201).json(nuevoPlato);
   } catch (error) {
-    console.error("Error en crearPlato:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("❌ Error en crearPlato:", error);
+    }
     res.status(400).json({ error: error.message });
   }
 };
@@ -76,6 +78,22 @@ const obtenerInactivos = async (req, res) => {
 const obtenerPorId = async (req, res) => {
   try {
     const plato = await platoService.obtenerPorId(req.params.id);
+    res.json(plato);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
+
+const obtenerPorIdPublico = async (req, res) => {
+  try {
+    const plato = await platoService.obtenerPorId(req.params.id);
+
+    if (!plato || !plato.activo) {
+      return res
+        .status(404)
+        .json({ error: "Plato no disponible públicamente" });
+    }
+
     res.json(plato);
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -118,13 +136,11 @@ const actualizarPlato = async (req, res) => {
           platoExistente.imagen
         );
         fs.unlink(rutaAnterior, (err) => {
-          if (err) {
+          if (err && process.env.NODE_ENV === "development") {
             console.warn(
               "⚠️ No se pudo eliminar la imagen anterior:",
               err.message
             );
-          } else {
-            console.log("🗑️ Imagen anterior eliminada:", platoExistente.imagen);
           }
         });
       }
@@ -145,24 +161,10 @@ const actualizarPlato = async (req, res) => {
 
     res.json(actualizado);
   } catch (error) {
-    console.error("Error en actualizarPlato:", error);
-    res.status(400).json({ error: error.message });
-  }
-};
-
-const obtenerPorIdPublico = async (req, res) => {
-  try {
-    const plato = await platoService.obtenerPorId(req.params.id);
-
-    if (!plato || !plato.activo) {
-      return res
-        .status(404)
-        .json({ error: "Plato no disponible públicamente" });
+    if (process.env.NODE_ENV === "development") {
+      console.error("❌ Error en actualizarPlato:", error);
     }
-
-    res.json(plato);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -213,10 +215,8 @@ const eliminar = async (req, res) => {
         platoExistente.imagen
       );
       fs.unlink(rutaImagen, (err) => {
-        if (err) {
+        if (err && process.env.NODE_ENV === "development") {
           console.warn("⚠️ No se pudo eliminar la imagen:", err.message);
-        } else {
-          console.log("🗑️ Imagen eliminada:", platoExistente.imagen);
         }
       });
     }

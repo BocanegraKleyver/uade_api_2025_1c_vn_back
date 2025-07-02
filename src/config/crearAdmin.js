@@ -14,7 +14,7 @@ const crearAdminSiNoExiste = async () => {
     nombre: "Sabores",
     apellido: "Urbanos",
     email: adminEmail,
-    contraseña: "admin123",
+    contraseña: "admin.1234",
     rol: "root",
     isRoot: true,
     activo: true,

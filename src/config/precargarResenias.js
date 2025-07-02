@@ -34,7 +34,7 @@ const comentariosNegativos = [
 const cantidadTotal = 100;
 
 const obtenerComentarioAleatorio = () => {
-  const esPositiva = Math.random() > 0.3; // 70% buenas, 30% críticas
+  const esPositiva = Math.random() > 0.3;
   const comentarios = esPositiva ? comentariosPositivos : comentariosNegativos;
   const valoracion = esPositiva
     ? Math.floor(Math.random() * 2) + 4

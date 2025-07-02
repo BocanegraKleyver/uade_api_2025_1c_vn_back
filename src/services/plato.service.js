@@ -1,4 +1,5 @@
 const platoRepo = require("../repositories/plato.repository");
+const Resena = require("../models/resenia.model");
 
 const crearPlato = async (datos) => {
   return await platoRepo.crearPlato(datos);
@@ -9,7 +10,25 @@ const obtenerTodos = async () => {
 };
 
 const obtenerActivos = async () => {
-  return await platoRepo.obtenerPlatosActivos();
+  const platos = await platoRepo.obtenerPlatosActivos();
+
+  const platosConPromedio = await Promise.all(
+    platos.map(async (plato) => {
+      const resenias = await Resena.find({ platoId: plato._id, activo: true });
+
+      const promedio =
+        resenias.length > 0
+          ? resenias.reduce((sum, r) => sum + r.valoracion, 0) / resenias.length
+          : null;
+
+      return {
+        ...plato.toObject(),
+        promedioValoracion: promedio,
+      };
+    })
+  );
+
+  return platosConPromedio;
 };
 
 const obtenerInactivos = async () => {

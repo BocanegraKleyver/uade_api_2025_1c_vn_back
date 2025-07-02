@@ -19,8 +19,14 @@ const generarToken = (usuario) => {
 };
 
 const verificarToken = (token) => {
-  console.log("🧪 Verificando token con SECRET:", SECRET);
-  return jwt.verify(token, SECRET);
+  try {
+    return jwt.verify(token, SECRET);
+  } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("❌ Token inválido:", error.message);
+    }
+    throw error;
+  }
 };
 
 module.exports = {

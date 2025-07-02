@@ -26,7 +26,7 @@ app.use("/api", logRoutes);
 app.use("/api/resenas", reseniaRoutes);
 
 app.get("/", (req, res) => {
-  res.send("API funcionando 👨‍🍳");
+  res.send("API Backend funcionando 👨‍🍳");
 });
 
 const PORT = process.env.PORT || 3001;
