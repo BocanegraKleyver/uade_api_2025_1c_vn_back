@@ -30,6 +30,9 @@ router.get(
   platoController.obtenerInactivos
 );
 
+// Ruta pública sin token ni permisos
+router.get("/platos/:id/publico", platoController.obtenerPorIdPublico);
+
 router.get(
   "/platos/:id",
   verificarToken,

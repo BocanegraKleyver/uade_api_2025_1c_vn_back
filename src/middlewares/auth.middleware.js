@@ -1,6 +1,10 @@
 const jwt = require("../utils/jwt");
 
 const verificarToken = (req, res, next) => {
+  console.log(
+    `🔐 Middleware verificarToken activado para ${req.method} ${req.originalUrl}`
+  );
+
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -20,6 +24,7 @@ const verificarToken = (req, res, next) => {
     }
 
     req.usuario = usuario;
+    console.log(`✅ Token válido para ${usuario.email}`);
     next();
   } catch (error) {
     console.warn("❌ Error al verificar token:", error.message);

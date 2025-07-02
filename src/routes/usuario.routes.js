@@ -85,8 +85,8 @@ router.delete(
   usuarioController.eliminar
 );
 
-router.use("/platos", verificarToken, verificarPermisoPlatos);
-router.use("/logs", verificarToken, verificarPermisoLogs);
-router.use("/resenas", verificarToken, verificarPermisoResenas);
+//router.use("/platos", verificarToken, verificarPermisoPlatos);
+//router.use("/logs", verificarToken, verificarPermisoLogs);
+//router.use("/resenas", verificarToken, verificarPermisoResenas);
 
 module.exports = router;

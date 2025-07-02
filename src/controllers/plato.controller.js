@@ -128,6 +128,22 @@ const actualizarPlato = async (req, res) => {
   }
 };
 
+const obtenerPorIdPublico = async (req, res) => {
+  try {
+    const plato = await platoService.obtenerPorId(req.params.id);
+
+    if (!plato || !plato.activo) {
+      return res
+        .status(404)
+        .json({ error: "Plato no disponible públicamente" });
+    }
+
+    res.json(plato);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
+
 const desactivar = async (req, res) => {
   try {
     const plato = await platoService.desactivarPlato(req.params.id);
@@ -181,6 +197,7 @@ module.exports = {
   obtenerTodos,
   obtenerActivos,
   obtenerInactivos,
+  obtenerPorIdPublico,
   obtenerPorId,
   actualizarPlato,
   desactivar,
