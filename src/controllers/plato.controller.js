@@ -1,6 +1,8 @@
 const platoService = require("../services/plato.service");
 const logger = require("../utils/logger");
 const { formatearUsuarioParaLog } = require("../utils/logger");
+const fs = require("fs");
+const path = require("path");
 
 const crearPlato = async (req, res) => {
   try {
@@ -107,6 +109,26 @@ const actualizarPlato = async (req, res) => {
     };
 
     if (req.file?.filename) {
+      const platoExistente = await platoService.obtenerPorId(req.params.id);
+
+      if (platoExistente?.imagen) {
+        const rutaAnterior = path.join(
+          __dirname,
+          "../../uploads",
+          platoExistente.imagen
+        );
+        fs.unlink(rutaAnterior, (err) => {
+          if (err) {
+            console.warn(
+              "⚠️ No se pudo eliminar la imagen anterior:",
+              err.message
+            );
+          } else {
+            console.log("🗑️ Imagen anterior eliminada:", platoExistente.imagen);
+          }
+        });
+      }
+
       datosActualizados.imagen = req.file.filename;
     }
 
@@ -178,6 +200,27 @@ const activar = async (req, res) => {
 
 const eliminar = async (req, res) => {
   try {
+    const platoExistente = await platoService.obtenerPorId(req.params.id);
+
+    if (!platoExistente) {
+      return res.status(404).json({ error: "Plato no encontrado" });
+    }
+
+    if (platoExistente.imagen) {
+      const rutaImagen = path.join(
+        __dirname,
+        "../../uploads",
+        platoExistente.imagen
+      );
+      fs.unlink(rutaImagen, (err) => {
+        if (err) {
+          console.warn("⚠️ No se pudo eliminar la imagen:", err.message);
+        } else {
+          console.log("🗑️ Imagen eliminada:", platoExistente.imagen);
+        }
+      });
+    }
+
     const eliminado = await platoService.eliminarPlato(req.params.id);
 
     await logger.log({

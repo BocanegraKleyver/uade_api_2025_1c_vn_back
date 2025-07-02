@@ -18,7 +18,7 @@ router.post(
 router.get("/usuarios/perfil", verificarToken, usuarioController.obtenerPorId);
 
 router.put(
-  "/usuarios/:id/contraseña",
+  "/usuarios/:id/password",
   verificarToken,
   soloAdmin,
   usuarioController.cambiarContraseña

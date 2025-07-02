@@ -2,32 +2,48 @@ const Resenia = require("../models/resenia.model");
 const Plato = require("../models/plato.model");
 const logger = require("../utils/logger");
 
-const reseñasFicticias = [
-  {
-    platoNombre: "Empanadas Salteñas",
-    nombre: "Lucía Gómez",
-    comentario: "¡Las mejores empanadas que probé en años!",
-    valoracion: 5,
-  },
-  {
-    platoNombre: "Provoleta",
-    nombre: "Martín Rivas",
-    comentario: "Buena, aunque me gustaría más crocante.",
-    valoracion: 4,
-  },
-  {
-    platoNombre: "Bife de Chorizo",
-    nombre: "Sofía Ledesma",
-    comentario: "Cocción perfecta y porción abundante.",
-    valoracion: 5,
-  },
-  {
-    platoNombre: "Trucha Patagónica",
-    nombre: "Andrés Molina",
-    comentario: "Un poco seca, pero buen sabor.",
-    valoracion: 3,
-  },
+const nombres = [
+  "Lucía Gómez",
+  "Martín Rivas",
+  "Sofía Ledesma",
+  "Andrés Molina",
+  "Valentina Ruiz",
+  "Julián Torres",
+  "Camila Ferreyra",
+  "Tomás Pérez",
+  "Micaela Álvarez",
+  "Ramiro Duarte",
 ];
+
+const comentariosPositivos = [
+  "¡Excelente sabor, volvería sin dudar!",
+  "Porción abundante y sabrosa.",
+  "La cocción fue perfecta. Muy recomendado.",
+  "Uno de los mejores que probé.",
+  "Gran presentación y sabor.",
+];
+
+const comentariosNegativos = [
+  "No cumplió mis expectativas.",
+  "Estaba un poco frío.",
+  "La porción era pequeña.",
+  "Muy salado para mi gusto.",
+  "La textura no me convenció.",
+];
+
+const cantidadTotal = 100;
+
+const obtenerComentarioAleatorio = () => {
+  const esPositiva = Math.random() > 0.3; // 70% buenas, 30% críticas
+  const comentarios = esPositiva ? comentariosPositivos : comentariosNegativos;
+  const valoracion = esPositiva
+    ? Math.floor(Math.random() * 2) + 4
+    : Math.floor(Math.random() * 3) + 1;
+  return {
+    texto: comentarios[Math.floor(Math.random() * comentarios.length)],
+    valoracion,
+  };
+};
 
 const precargarResenias = async () => {
   try {
@@ -37,22 +53,25 @@ const precargarResenias = async () => {
       return;
     }
 
+    const platos = await Plato.find();
+    if (platos.length === 0) {
+      console.warn("❌ No hay platos cargados en la base.");
+      return;
+    }
+
     const insertables = [];
 
-    for (const r of reseñasFicticias) {
-      const plato = await Plato.findOne({ nombre: r.platoNombre });
-
-      if (!plato) {
-        console.warn(`❌ Plato no encontrado: ${r.platoNombre}`);
-        continue;
-      }
+    for (let i = 0; i < cantidadTotal; i++) {
+      const plato = platos[Math.floor(Math.random() * platos.length)];
+      const nombre = nombres[Math.floor(Math.random() * nombres.length)];
+      const { texto, valoracion } = obtenerComentarioAleatorio();
 
       insertables.push({
         platoId: plato._id,
         platoNombre: plato.nombre,
-        nombre: r.nombre,
-        comentario: r.comentario,
-        valoracion: r.valoracion,
+        nombre,
+        comentario: texto,
+        valoracion,
         activo: true,
       });
     }
