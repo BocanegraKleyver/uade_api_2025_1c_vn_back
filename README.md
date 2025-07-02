@@ -96,8 +96,8 @@ npm install
 3. Crear archivo `.env` en la raíz del proyecto con el siguiente contenido:
 
 ````env
-MONGODB_URI=mongodb+srv://BocanegraKleyver:QzRDEw28DkzPYpTa@saboresurbanoscluster.mfn9vy8.mongodb.net/saboresurbanos?retryWrites=true&w=majority&appName=SaboresUrbanosCluster
-JWT_SECRET=SaboresUrbanosSecret123
+MONGODB_URI= Pedir al Administrador
+JWT_SECRET= Pedir al Administrador.
 
 
 4. Iniciar servidor local:
