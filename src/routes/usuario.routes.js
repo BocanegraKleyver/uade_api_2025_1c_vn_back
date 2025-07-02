@@ -4,9 +4,6 @@ const router = express.Router();
 const usuarioController = require("../controllers/usuario.controller");
 const verificarToken = require("../middlewares/auth.middleware");
 const soloAdmin = require("../middlewares/soloAdmin");
-const verificarPermisoPlatos = require("../middlewares/verificarPermisoEdicionPlatos");
-const verificarPermisoLogs = require("../middlewares/verificarPermisoLogs");
-const verificarPermisoResenas = require("../middlewares/verificarPermisoResenas");
 const soloRootParaAdmins = require("../middlewares/soloRootParaAdmins");
 
 router.post("/usuarios", usuarioController.registrarUsuario);
@@ -84,9 +81,5 @@ router.delete(
   soloAdmin,
   usuarioController.eliminar
 );
-
-//router.use("/platos", verificarToken, verificarPermisoPlatos);
-//router.use("/logs", verificarToken, verificarPermisoLogs);
-//router.use("/resenas", verificarToken, verificarPermisoResenas);
 
 module.exports = router;

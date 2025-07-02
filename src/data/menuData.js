@@ -11,6 +11,7 @@ module.exports = [
         alergenos: ["Gluten"],
         etiquetas: [],
         slug: "empanadas-salteñas",
+        imagen: "empanadassaltenas.jpg",
       },
       {
         nombre: "Provoleta",
@@ -20,6 +21,7 @@ module.exports = [
         alergenos: ["Lácteos"],
         etiquetas: [],
         slug: "provoleta",
+        imagen: "provoleta.jpg",
       },
       {
         nombre: "Chorizo a la Parrilla",
@@ -29,6 +31,7 @@ module.exports = [
         alergenos: ["Gluten"],
         etiquetas: [],
         slug: "chorizo-a-la-parrilla",
+        imagen: "chorizoalaparrilla.jpg",
       },
       {
         nombre: "Bruschetta Mediterránea",
@@ -38,6 +41,7 @@ module.exports = [
         alergenos: ["Gluten"],
         etiquetas: [],
         slug: "bruschetta-mediterránea",
+        imagen: "bruschettamediterranea.jpg",
       },
     ],
   },
@@ -58,6 +62,7 @@ module.exports = [
         alergenos: ["Gluten", "Huevo", "Lácteos"],
         etiquetas: [],
         slug: "ensalada-césar",
+        imagen: "ensaladacesar.jpg",
       },
       {
         nombre: "Ensalada Veggie",
@@ -67,6 +72,7 @@ module.exports = [
         alergenos: [],
         etiquetas: ["Vegano", "Sin lactosa"],
         slug: "ensalada-veggie",
+        imagen: "ensaladaveggie.jpg",
       },
       {
         nombre: "Ensalada Burrata",
@@ -81,6 +87,7 @@ module.exports = [
         alergenos: ["Lácteos"],
         etiquetas: [],
         slug: "ensalada-burrata",
+        imagen: "ensaladaburrata.jpg",
       },
     ],
   },
@@ -95,6 +102,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "bife-de-chorizo",
+        imagen: "bifedechorizo.jpg",
       },
       {
         nombre: "Asado Criollo",
@@ -104,6 +112,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "asado-criollo",
+        imagen: "asadocriollo.jpg",
       },
       {
         nombre: "Bondiola Braseada",
@@ -113,6 +122,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "bondiola-braseada",
+        imagen: "bondiolabraseada.jpg",
       },
     ],
   },
@@ -127,6 +137,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "pollo-al-verdeo",
+        imagen: "polloalverdeo.jpg",
       },
       {
         nombre: "Pollo a la Parrilla",
@@ -136,6 +147,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "pollo-a-la-parrilla",
+        imagen: "polloalaparrilla.jpg",
       },
       {
         nombre: "Suprema Napolitana",
@@ -145,6 +157,7 @@ module.exports = [
         alergenos: ["Gluten", "Lácteos"],
         etiquetas: [],
         slug: "suprema-napolitana",
+        imagen: "supremanapolitana.jpg",
       },
     ],
   },
@@ -159,6 +172,7 @@ module.exports = [
         alergenos: ["Pescado"],
         etiquetas: [],
         slug: "trucha-patagónica",
+        imagen: "truchapatagonica.jpg",
       },
       {
         nombre: "Merluza al Limón",
@@ -168,6 +182,7 @@ module.exports = [
         alergenos: ["Pescado", "Lácteos"],
         etiquetas: [],
         slug: "merluza-al-limón",
+        imagen: "merluzaallimon.jpg",
       },
     ],
   },
@@ -182,6 +197,7 @@ module.exports = [
         alergenos: ["Gluten"],
         etiquetas: [],
         slug: "ñoquis-con-salsa-bolognesa",
+        imagen: "noquisconsalsabolognesa.jpg",
       },
       {
         nombre: "Ravioles de Verdura",
@@ -191,6 +207,7 @@ module.exports = [
         alergenos: ["Gluten", "Lácteos"],
         etiquetas: [],
         slug: "ravioles-de-verdura",
+        imagen: "raviolesdeverdura.jpg",
       },
       {
         nombre: "Lasagna Veggie",
@@ -200,6 +217,7 @@ module.exports = [
         alergenos: ["Gluten", "Lácteos"],
         etiquetas: ["Vegano"],
         slug: "lasagna-veggie",
+        imagen: "lasagnaveggie.jpg",
       },
     ],
   },
@@ -214,6 +232,7 @@ module.exports = [
         alergenos: ["Huevo", "Lácteos"],
         etiquetas: [],
         slug: "flan-casero",
+        imagen: "flancasero.jpg",
       },
       {
         nombre: "Tiramisú",
@@ -230,6 +249,7 @@ module.exports = [
         precio: 3100,
         alergenos: ["Huevos", "Leche", "Gluten", "Alcohol (opcional)"],
         slug: "tiramisú",
+        imagen: "tiramisu.jpg",
       },
       {
         nombre: "Volcán de Chocolate",
@@ -239,6 +259,7 @@ module.exports = [
         alergenos: ["Gluten", "Huevo"],
         etiquetas: [],
         slug: "volcán-de-chocolate",
+        imagen: "volcandechocolate.jpg",
       },
       {
         nombre: "Cheesecake",
@@ -248,6 +269,7 @@ module.exports = [
         alergenos: ["Lácteos", "Gluten"],
         etiquetas: [],
         slug: "cheesecake",
+        imagen: "cheesecake.jpg",
       },
       {
         nombre: "Alfajores",
@@ -257,6 +279,7 @@ module.exports = [
         alergenos: ["Lácteos", "Gluten"],
         etiquetas: [],
         slug: "alfajores",
+        imagen: "alfajores.jpg",
       },
     ],
   },
@@ -271,6 +294,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "vino-malbec",
+        imagen: "vinomalbec.jpg",
       },
       {
         nombre: "Cerveza Artesanal",
@@ -280,6 +304,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "cerveza-artesanal",
+        imagen: "cervezaartesanal.jpg",
       },
       {
         nombre: "Fernet con Coca",
@@ -289,6 +314,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "fernet-con-coca",
+        imagen: "fernetconcoca.jpg",
       },
     ],
   },
@@ -303,6 +329,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "agua-saborizada",
+        imagen: "aguasaborizada.jpg",
       },
       {
         nombre: "Gaseosa Coca Cola",
@@ -312,6 +339,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "gaseosa-coca-cola",
+        imagen: "gaseosacocacola.jpg",
       },
       {
         nombre: "Limonada Casera",
@@ -321,6 +349,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "limonada-casera",
+        imagen: "limonadacasera.jpg",
       },
       {
         nombre: "Agua mineral con gas",
@@ -330,6 +359,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "agua-mineral-con-gas",
+        imagen: "aguamineralcongas.jpg",
       },
       {
         nombre: "Agua mineral sin gas",
@@ -339,6 +369,7 @@ module.exports = [
         alergenos: [],
         etiquetas: [],
         slug: "agua-mineral-sin-gas",
+        imagen: "aguamineralsingas.jpg",
       },
     ],
   },

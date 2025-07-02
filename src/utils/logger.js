@@ -1,6 +1,5 @@
 const Log = require("../models/Log.model");
 
-// Esta función da formato consistente al objeto usuario para el log
 const formatearUsuarioParaLog = (usuario) => {
   if (!usuario || !usuario.email) {
     return {
@@ -48,7 +47,6 @@ const log = async ({ usuario, accion, detalle = "" }) => {
   }
 };
 
-// Exportamos ambas funciones
 module.exports = {
   log,
   formatearUsuarioParaLog,

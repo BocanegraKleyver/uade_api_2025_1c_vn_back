@@ -1,5 +1,3 @@
-// resenia.routes.js
-
 const express = require("express");
 const router = express.Router();
 
@@ -7,7 +5,6 @@ const reseniaController = require("../controllers/resenia.controller");
 const verificarToken = require("../middlewares/auth.middleware");
 const verificarPermisoResenas = require("../middlewares/verificarPermisoResenas");
 
-// 🟢 Ruta pública SIN token
 router.get(
   "/plato/:platoId",
   (req, res, next) => {
@@ -17,7 +14,6 @@ router.get(
   reseniaController.obtenerPorPlato
 );
 
-// 🟢 Ruta pública para crear reseñas
 router.post(
   "/",
   (req, res, next) => {
@@ -27,7 +23,6 @@ router.post(
   reseniaController.crear
 );
 
-// 🔒 Rutas privadas CON token
 router.get(
   "/",
   verificarToken,
